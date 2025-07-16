@@ -67,12 +67,12 @@ func (b *Broker) Register(handlers ...Handler) error {
 		ctx := context.Background()
 
 		// Register the topics with the subscriber
-		if err := b.Subscriber.RegisterTopics(ctx, topics...); err != nil {
+		if err := b.RegisterTopics(ctx, topics...); err != nil {
 			return fmt.Errorf("failed to register topics: %w", err)
 		}
 
 		// Also notify subscriber about the handlers
-		if err := b.Subscriber.RegisterHandlers(ctx, handlers...); err != nil {
+		if err := b.RegisterHandlers(ctx, handlers...); err != nil {
 			return fmt.Errorf("failed to register handlers: %w", err)
 		}
 	}

@@ -33,8 +33,8 @@ func TestSimpleDispatch(t *testing.T) {
 	b := broker.New(2, pub, sub, logger)
 
 	// Register handlers
-	b.Register(pingHandler)
-	b.Register(pongHandler)
+	b.Register(pingHandler) // nolint: errcheck
+	b.Register(pongHandler) // nolint: errcheck
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -195,8 +195,8 @@ func TestTypedDispatch(t *testing.T) {
 	b := broker.New(2, pub, sub, logger)
 
 	// Register handlers
-	b.Register(typedHandler)
-	b.Register(typedService)
+	b.Register(typedHandler) // nolint: errcheck
+	b.Register(typedService) // nolint: errcheck
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
