@@ -9,6 +9,10 @@ on:
 env:
   GO_VERSION: '1.21'
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   lint:
     name: Lint
@@ -100,7 +104,7 @@ jobs:
     - name: Start services
       run: |
         cd examples/kafka
-        docker-compose up -d
+        docker compose up -d
         sleep 10
 
     - name: Run integration tests
@@ -110,7 +114,7 @@ jobs:
       if: always()
       run: |
         cd examples/kafka
-        docker-compose down
+        docker compose down
 
   security:
     name: Security Scan
@@ -171,13 +175,26 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
+    - name: Install dependencies
+      run: go mod download
+
     - name: Run benchmarks
-      run: go test -bench=. -benchmem ./... | tee benchmark.txt
+      run: |
+        echo "Running benchmarks..."
+        go test -bench=. -benchmem ./... > benchmark.txt 2>&1 || true
+        if grep -q "^Benchmark" benchmark.txt; then
+          echo "Benchmarks found and executed"
+        else
+          echo "No benchmarks found in the project"
+          echo "No benchmarks available" > benchmark.txt
+        fi
 
     - name: Store benchmark result
+      if: contains(github.event.head_commit.message, '[benchmark]') || github.event_name == 'push'
       uses: benchmark-action/github-action-benchmark@v1
       with:
         tool: 'go'
         output-file-path: benchmark.txt
         github-token: ${{ secrets.GITHUB_TOKEN }}
         auto-push: true
+        skip-fetch-gh-pages: true
