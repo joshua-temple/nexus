@@ -165,7 +165,7 @@ Advanced features for complex use cases:
 
 ## Contributing
 
-We welcome contributions! If you're interested in working on any of these items:
+Contributions welcome! If you're interested in working on any of these items:
 
 1. Check if someone is already working on it (see Issues)
 2. Comment on the issue or create one if it doesn't exist
