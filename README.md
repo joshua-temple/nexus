@@ -1,5 +1,12 @@
 # Nexus
 
+[![Build Status](https://github.com/joshua-temple/nexus/workflows/CI/badge.svg)](https://github.com/joshua-temple/nexus/actions)
+[![Coverage Status](https://coveralls.io/repos/github/joshua-temple/nexus/badge.svg?branch=main)](https://coveralls.io/github/joshua-temple/nexus?branch=main)
+[![Go Report Card](https://goreportcard.com/badge/github.com/joshua-temple/nexus)](https://goreportcard.com/report/github.com/joshua-temple/nexus)
+[![GoDoc](https://pkg.go.dev/badge/github.com/joshua-temple/nexus)](https://pkg.go.dev/github.com/joshua-temple/nexus)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/joshua-temple/nexus)](https://github.com/joshua-temple/nexus/blob/main/go.mod)
+
 A powerful, minimal-boilerplate message broker for Go with automatic response correlation and hierarchical command orchestration.
 
 ## Quick Start
