@@ -165,7 +165,7 @@ func (h *OrderHandler) Handle(ctx *nexus.Context) error {
 Explore complete working examples:
 
 - **[Memory Broker](examples/memory/)** - In-memory implementation for testing and development
-- **[Kafka/RedPanda](examples/kafka/)** - Production-ready Kafka integration with Docker Compose
+- **[Kafka/RedPanda](examples/kafka/)** - Kafka integration with Docker Compose
 - **[Example Handlers](examples/example_handler.go)** - Common patterns and best practices
 
 ## Advanced Features
