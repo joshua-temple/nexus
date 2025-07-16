@@ -135,7 +135,7 @@ jobs:
         sarif_file: results.sarif
 
   build:
-    name: Build
+    name: Build Check
     runs-on: ubuntu-latest
     needs: [lint, test]
     steps:
@@ -155,17 +155,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-    - name: Build
+    - name: Check library compilation
       run: make build
-
-    - name: Build releases
-      run: make release
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: binaries
-        path: dist/
 
   benchmark:
     name: Benchmark

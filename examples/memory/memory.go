@@ -39,9 +39,8 @@ func (h *Hub) SetStoreLimit(limit int) {
 
 // publish sends a message to all subscribers of a topic
 func (h *Hub) publish(envelope *broker.Envelope) {
-	h.mu.RLock()
-	defer h.mu.RUnlock()
-
+	h.mu.Lock()
+	
 	// Store the message
 	if h.storeLimit > 0 {
 		messages := h.messageStore[envelope.DestinationTopic]
@@ -54,16 +53,24 @@ func (h *Hub) publish(envelope *broker.Envelope) {
 		h.messageStore[envelope.DestinationTopic] = messages
 	}
 
-	// Send to all subscribers
+	// Get a copy of channels to avoid holding lock while sending
+	var channelsCopy []chan *broker.Envelope
 	if channels, ok := h.topics[envelope.DestinationTopic]; ok {
-		for _, ch := range channels {
-			select {
-			case ch <- envelope:
-				// Sent successfully
-			default:
-				// Channel is full, skip this subscriber
-				// In a real implementation, you might want to handle this differently
-			}
+		channelsCopy = make([]chan *broker.Envelope, len(channels))
+		copy(channelsCopy, channels)
+	}
+	
+	// Unlock before sending to channels
+	h.mu.Unlock()
+	
+	// Send to all subscribers without holding the lock
+	for _, ch := range channelsCopy {
+		select {
+		case ch <- envelope:
+			// Sent successfully
+		default:
+			// Channel is full, skip this subscriber
+			// In a real implementation, you might want to handle this differently
 		}
 	}
 }

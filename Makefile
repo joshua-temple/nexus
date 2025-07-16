@@ -28,10 +28,10 @@ PKG_LIST=$(shell go list ./... | grep -v /vendor/)
 # Default target
 all: deps lint test build
 
-# Build the project
+# Build the project (library verification)
 build:
-	@echo "Building..."
-	$(GOBUILD) $(LDFLAGS) -o $(BINARY_NAME) -v ./...
+	@echo "Building library..."
+	$(GOBUILD) -v ./...
 
 # Run tests
 test:
@@ -78,7 +78,7 @@ install-tools:
 # Run golangci-lint
 lint: install-tools
 	@echo "Running linters..."
-	$(GOLINT) run --timeout=5m ./...
+	$(GOLINT) run --timeout=5m --enable=errcheck,gosimple,govet,ineffassign,staticcheck,unused,gofmt,goimports,misspell,revive,gosec,unconvert,unparam,bodyclose,noctx,gocritic,gocyclo,dupl --disable=godox --tests ./...
 
 # Format code
 fmt:
@@ -122,14 +122,10 @@ pre-commit: fmt lint test
 # CI checks (what runs in CI/CD)
 ci: deps check-fmt lint vet test-coverage
 
-# Release build
-release:
-	@echo "Building release..."
-	@mkdir -p dist
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o dist/$(BINARY_NAME)-linux-amd64
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64
-	GOOS=darwin GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe
+# Library check - ensure all packages compile
+check-lib:
+	@echo "Checking library compilation..."
+	$(GOBUILD) -v ./...
 
 # Docker build
 docker-build:
@@ -163,6 +159,6 @@ help:
 	@echo "  update-deps      Update dependencies"
 	@echo "  pre-commit       Run pre-commit checks"
 	@echo "  ci               Run CI checks"
-	@echo "  release          Build release binaries"
+	@echo "  check-lib        Check library compilation"
 	@echo "  docker-build     Build Docker image"
 	@echo "  help             Show this help message"
