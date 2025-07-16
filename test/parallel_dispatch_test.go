@@ -279,7 +279,9 @@ func (h *FlightSearchHandler) Topics() []broker.Topic {
 
 func (h *FlightSearchHandler) Handle(ctx *broker.Context) error {
 	var req FlightSearchRequest
-	ctx.Unmarshal(&req)
+	if err := ctx.Unmarshal(&req); err != nil {
+		return err
+	}
 
 	// Simulate flight search
 	return ctx.Reply(FlightResult{
@@ -298,7 +300,9 @@ func (h *HotelSearchHandler) Topics() []broker.Topic {
 
 func (h *HotelSearchHandler) Handle(ctx *broker.Context) error {
 	var req HotelSearchRequest
-	ctx.Unmarshal(&req)
+	if err := ctx.Unmarshal(&req); err != nil {
+		return err
+	}
 
 	nights := int(req.CheckOut.Sub(req.CheckIn).Hours() / 24)
 

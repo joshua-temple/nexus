@@ -26,8 +26,8 @@ func ExampleNewMemoryBroker() {
 	)
 
 	// Register handlers
-	b.Register(&OrderHandler{paymentTopic: *paymentTopic})
-	b.Register(&PaymentHandler{})
+	_ = b.Register(&OrderHandler{paymentTopic: *paymentTopic})
+	_ = b.Register(&PaymentHandler{})
 
 	// Start broker
 	if err := b.Start(ctx); err != nil {
@@ -96,7 +96,7 @@ func ExampleHub_SetStoreLimit() {
 			DestinationTopic: "events",
 			Payload:          fmt.Sprintf("Event %d", i),
 		}
-		pub.Publish(ctx, envelope)
+		_ = pub.Publish(ctx, envelope)
 	}
 
 	// New subscriber joins

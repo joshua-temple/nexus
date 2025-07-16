@@ -15,7 +15,7 @@ func ExampleNewPublisher() {
 		fmt.Printf("Failed to create publisher: %v\n", err)
 		return
 	}
-	defer pub.Close()
+	defer func() { _ = pub.Close() }()
 
 	// In a real application, you would create an envelope and publish like this:
 	// envelope := &broker.Envelope{
@@ -83,7 +83,7 @@ func Example_brokerIntegration() {
 	// Create publisher and subscriber using compatibility wrappers
 	// These wrappers maintain the original interface while using franz-go underneath
 	pub := kafka.NewPublisherCompat(brokers)
-	defer pub.Close()
+	defer func() { _ = pub.Close() }()
 
 	topics := []string{"orders.process.cmd.v1", "orders.validate.cmd.v1"}
 	sub := kafka.NewSubscriberCompat(brokers, topics, "order-service", nil)
@@ -99,11 +99,11 @@ func Example_brokerIntegration() {
 	validateTopic = validateTopic.WithPurpose("command").WithTopicType(broker.TopicTypeCommand)
 
 	// Register handlers
-	b.Register(&orderProcessor{
+	_ = b.Register(&orderProcessor{
 		processTopic:  *processTopic,
 		validateTopic: *validateTopic,
 	})
-	b.Register(&orderValidator{
+	_ = b.Register(&orderValidator{
 		topic: *validateTopic,
 	})
 

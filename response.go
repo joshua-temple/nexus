@@ -29,7 +29,7 @@ type TypedResponse[T any] struct {
 
 // OnResult sets a callback to process the response
 func (r *TypedResponse[T]) OnResult(fn func(T) error) *TypedResponse[T] {
-	r.Response.onResult = func(env *Envelope) error {
+	r.onResult = func(env *Envelope) error {
 		// Unmarshal based on payload type
 		switch payload := env.Payload.(type) {
 		case []byte:
@@ -62,7 +62,7 @@ func (r *TypedResponse[T]) OnResult(fn func(T) error) *TypedResponse[T] {
 
 // Required marks this response as required (deprecated: use WithRequired option instead)
 func (r *TypedResponse[T]) Required() *TypedResponse[T] {
-	r.Response.required = true
+	r.required = true
 	return r
 }
 

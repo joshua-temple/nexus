@@ -131,7 +131,7 @@ func (h *CreditCheckHandler) Handle(ctx *broker.Context) error {
 	bureauResult := broker.DispatchTyped[BureauQueryResult](
 		ctx,
 		*TopicBureauQuery,
-		BureauQueryRequest{CustomerID: req.CustomerID},
+		req, // Direct conversion instead of struct literal
 		broker.WithRequired(),
 	)
 
@@ -174,7 +174,7 @@ func (h *BureauQueryHandler) Handle(ctx *broker.Context) error {
 	analysisResult := broker.DispatchTyped[DetailedAnalysisResult](
 		ctx,
 		*TopicDetailedAnalysis,
-		DetailedAnalysisRequest{CustomerID: req.CustomerID},
+		req, // Direct conversion instead of struct literal
 		broker.WithRequired(),
 	)
 

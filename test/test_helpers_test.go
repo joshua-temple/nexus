@@ -12,12 +12,6 @@ import (
 
 // Test infrastructure helpers
 
-type testEnvelope struct {
-	*broker.Envelope
-	processed bool
-	mu        sync.Mutex
-}
-
 // In-memory test publisher
 type testPublisher struct {
 	mu        sync.RWMutex

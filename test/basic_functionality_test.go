@@ -18,7 +18,9 @@ func TestBasicFunctionality(t *testing.T) {
 
 	// Simple handler that just logs
 	handler := &basicHandler{t: t}
-	b.Register(handler)
+	if err := b.Register(handler); err != nil {
+		t.Fatalf("Failed to register handler: %v", err)
+	}
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -82,8 +84,12 @@ func TestNestedDispatch(t *testing.T) {
 	parentHandler := &parentHandler{t: t}
 	childHandler := &childHandler{t: t}
 
-	b.Register(parentHandler)
-	b.Register(childHandler)
+	if err := b.Register(parentHandler); err != nil {
+		t.Fatalf("Failed to register parent handler: %v", err)
+	}
+	if err := b.Register(childHandler); err != nil {
+		t.Fatalf("Failed to register child handler: %v", err)
+	}
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

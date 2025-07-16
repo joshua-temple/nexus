@@ -218,7 +218,7 @@ func ExampleBroker() {
 	b := broker.New(10, publisher, subscriber, nil)
 
 	// Register handlers - that's it!
-	b.Register(
+	_ = b.Register(
 		&CreateOrderHandler{},
 		&InventoryHandler{},
 		&PaymentHandler{},

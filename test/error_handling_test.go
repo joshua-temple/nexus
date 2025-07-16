@@ -273,7 +273,9 @@ func (h *FraudCheckHandler) Topics() []broker.Topic {
 
 func (h *FraudCheckHandler) Handle(ctx *broker.Context) error {
 	var req FraudCheckRequest
-	ctx.Unmarshal(&req)
+	if err := ctx.Unmarshal(&req); err != nil {
+		return err
+	}
 
 	// Simulate different scenarios
 	if req.Amount > 10000 {
@@ -308,7 +310,9 @@ func (h *BankAuthHandler) Topics() []broker.Topic {
 
 func (h *BankAuthHandler) Handle(ctx *broker.Context) error {
 	var req BankAuthRequest
-	ctx.Unmarshal(&req)
+	if err := ctx.Unmarshal(&req); err != nil {
+		return err
+	}
 
 	// Simulate insufficient funds
 	if req.Amount > 5000 {
