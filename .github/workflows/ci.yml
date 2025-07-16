@@ -71,7 +71,7 @@ jobs:
       run: go mod download
 
     - name: Run tests
-      run: go test -v -race -coverprofile=./coverage.txt -covermode=atomic ./...
+      run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.go == '1.21'
@@ -101,14 +101,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-    - name: Start services
-      run: |
-        cd examples/kafka
-        docker compose up -d
-        sleep 10
+    - name: Install dependencies
+      run: go mod download
 
     - name: Run integration tests
-      run: go test -v -tags=integration ./...
+      run: |
+        # Integration tests use dockertest and manage their own containers
+        # Set to use a different port to avoid conflicts
+        export KAFKA_TEST_PORT=29092
+        go test -v -tags=integration ./...
 
     - name: Stop services
       if: always()

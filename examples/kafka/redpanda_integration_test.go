@@ -28,6 +28,13 @@ var (
 	resource        *dockertest.Resource
 )
 
+func getTestPort() string {
+	if port := os.Getenv("KAFKA_TEST_PORT"); port != "" {
+		return port
+	}
+	return "19092"
+}
+
 func TestMain(m *testing.M) {
 	// Check if we should skip integration tests
 	if os.Getenv("SKIP_INTEGRATION") == "true" {
@@ -67,7 +74,7 @@ func TestMain(m *testing.M) {
 		},
 		ExposedPorts: []string{"19092/tcp"},
 		PortBindings: map[docker.Port][]docker.PortBinding{
-			"19092/tcp": {{HostIP: "localhost", HostPort: "19092"}},
+			"19092/tcp": {{HostIP: "localhost", HostPort: getTestPort()}},
 		},
 	}, func(config *docker.HostConfig) {
 		config.AutoRemove = true
@@ -78,8 +85,11 @@ func TestMain(m *testing.M) {
 		panic(fmt.Sprintf("Could not start resource: %s", err))
 	}
 
-	// Get the port
+	// Get the port - use environment variable if set (for CI)
 	port := resource.GetPort("19092/tcp")
+	if envPort := os.Getenv("KAFKA_TEST_PORT"); envPort != "" {
+		port = envPort
+	}
 	redpandaBrokers = []string{fmt.Sprintf("localhost:%s", port)}
 
 	// Exponential backoff-retry, because the application in the container might not be ready to accept connections yet
