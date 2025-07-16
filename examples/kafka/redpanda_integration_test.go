@@ -13,9 +13,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twmb/franz-go/pkg/kgo"
 
 	broker "github.com/joshua-temple/nexus"
 )
@@ -82,15 +84,17 @@ func TestMain(m *testing.M) {
 
 	// Exponential backoff-retry, because the application in the container might not be ready to accept connections yet
 	if err := pool.Retry(func() error {
-		conn, err := kafka.Dial("tcp", redpandaBrokers[0])
+		// Try to create a client to test connection
+		client, err := kgo.NewClient(
+			kgo.SeedBrokers(redpandaBrokers...),
+		)
 		if err != nil {
 			return err
 		}
-		defer conn.Close()
+		defer client.Close()
 
-		// Test if we can get the controller
-		_, err = conn.Controller()
-		return err
+		// Test if we can ping the broker
+		return client.Ping(context.Background())
 	}); err != nil {
 		panic(fmt.Sprintf("Could not connect to RedPanda: %s", err))
 	}

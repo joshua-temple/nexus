@@ -253,10 +253,18 @@ func TestNestedAggregation(t *testing.T) {
 	defer cleanup()
 
 	// Register all handlers
-	b.Register(&RiskAssessmentHandler{})
-	b.Register(&CreditCheckHandler{})
-	b.Register(&BureauQueryHandler{})
-	b.Register(&DetailedAnalysisHandler{})
+	if err := b.Register(&RiskAssessmentHandler{}); err != nil {
+		t.Fatalf("Failed to register RiskAssessmentHandler: %v", err)
+	}
+	if err := b.Register(&CreditCheckHandler{}); err != nil {
+		t.Fatalf("Failed to register CreditCheckHandler: %v", err)
+	}
+	if err := b.Register(&BureauQueryHandler{}); err != nil {
+		t.Fatalf("Failed to register BureauQueryHandler: %v", err)
+	}
+	if err := b.Register(&DetailedAnalysisHandler{}); err != nil {
+		t.Fatalf("Failed to register DetailedAnalysisHandler: %v", err)
+	}
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -332,10 +340,18 @@ func TestNestedAggregationWithHighRisk(t *testing.T) {
 	defer cleanup()
 
 	// Register all handlers
-	b.Register(&RiskAssessmentHandler{})
-	b.Register(&CreditCheckHandler{})
-	b.Register(&BureauQueryHandler{})
-	b.Register(&DetailedAnalysisHandler{})
+	if err := b.Register(&RiskAssessmentHandler{}); err != nil {
+		t.Fatalf("Failed to register RiskAssessmentHandler: %v", err)
+	}
+	if err := b.Register(&CreditCheckHandler{}); err != nil {
+		t.Fatalf("Failed to register CreditCheckHandler: %v", err)
+	}
+	if err := b.Register(&BureauQueryHandler{}); err != nil {
+		t.Fatalf("Failed to register BureauQueryHandler: %v", err)
+	}
+	if err := b.Register(&DetailedAnalysisHandler{}); err != nil {
+		t.Fatalf("Failed to register DetailedAnalysisHandler: %v", err)
+	}
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)

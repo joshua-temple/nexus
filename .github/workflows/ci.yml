@@ -71,7 +71,7 @@ jobs:
       run: go mod download
 
     - name: Run tests
-      run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -v -race -coverprofile=./coverage.txt -covermode=atomic ./...
 
     - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.go == '1.21'
@@ -184,13 +184,14 @@ jobs:
         go test -bench=. -benchmem ./... > benchmark.txt 2>&1 || true
         if grep -q "^Benchmark" benchmark.txt; then
           echo "Benchmarks found and executed"
+          echo "BENCHMARK_FOUND=true" >> $GITHUB_ENV
         else
           echo "No benchmarks found in the project"
-          echo "No benchmarks available" > benchmark.txt
+          echo "BENCHMARK_FOUND=false" >> $GITHUB_ENV
         fi
 
     - name: Store benchmark result
-      if: contains(github.event.head_commit.message, '[benchmark]') || github.event_name == 'push'
+      if: env.BENCHMARK_FOUND == 'true'
       uses: benchmark-action/github-action-benchmark@v1
       with:
         tool: 'go'
