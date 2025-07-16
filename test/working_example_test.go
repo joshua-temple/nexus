@@ -30,8 +30,8 @@ func TestWorkingExample(t *testing.T) {
 	inventoryService := &InventoryService{t: t}
 
 	// Register services
-	b.Register(orderService)
-	b.Register(inventoryService)
+	b.Register(orderService)     // nolint: errcheck
+	b.Register(inventoryService) // nolint: errcheck
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -227,7 +227,7 @@ func TestTypedResponseExample(t *testing.T) {
 
 	// Create calculation service
 	calcService := &CalculationService{t: t}
-	b.Register(calcService)
+	b.Register(calcService) // nolint: errcheck
 
 	// Start broker
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

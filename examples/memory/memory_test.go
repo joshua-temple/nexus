@@ -249,8 +249,8 @@ func TestMemoryBrokerIntegration(t *testing.T) {
 	pongHandler := &testPongHandler{}
 
 	// Register handlers
-	b.Register(pingHandler)
-	b.Register(pongHandler)
+	b.Register(pingHandler) // nolint: errcheck
+	b.Register(pongHandler) // nolint: errcheck
 
 	// Start broker
 	err := b.Start(ctx)
